@@ -1,0 +1,1 @@
+../../blueprints/mobilitydb.build.sh
