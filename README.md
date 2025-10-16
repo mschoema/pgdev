@@ -3,8 +3,6 @@
 A command-line tool for creating, managing, and interacting with
 multiple, isolated PostgreSQL development environments built from source.
 
-***
-
 ## Introduction
 
 **`pgdev`** is a tool designed to simplify the workflow of developers
@@ -17,8 +15,6 @@ build system without a rigid configuration framework. It uses simple,
 executable shell scripts (`Blueprints`) and a self-contained directory
 structure, giving you full control over the build process while
 automating the tedious aspects of environment management.
-
-***
 
 ## Core Concepts
 
@@ -35,23 +31,25 @@ makes it easy to find all related files and manage the installation.
 
 \~/pgdev/
 ├── instances/              # User's database instances are created here
-│   └── pg17-main/
+│   └── pg18/
 │       ├── src/
 │       ├── install/
 │       ├── data/
-│       ├── logs/
-│       └── pgdev.conf
+│       ├── postgresql.log
+│       ├── pgdev.conf
+│       └── ...
 │
+├── templates/              # User's personal templates
 ├── blueprints/             # User's personal, reusable blueprint scripts
 │
 └── .core/                  # The tool's internal installation files (hidden)
     ├── bin/
     │   └── pgdev.sh        # The core logic in a portable bash script
     ├── shell/
-    │   ├── pgdev.fish      # Wrapper and completions for fish shell
     │   └── pgdev.sh.env    # Script to be sourced for bash/zsh
+    ├── blueprints/         # Default blueprints shipped with the tool
     └── templates/          # Default templates shipped with the tool
-        └── postgres-only/
+        └── base/
 
 ````
 
@@ -72,11 +70,9 @@ extension work. The `pgdev new` command uses these templates to
 scaffold a new instance.
 
 The tool also supports a **blueprint override system**. When you use a
-template, **`pgdev`** will first look for blueprints in your personal
-`~/pgdev/blueprints/` directory before falling back to the default
+template, **`pgdev`** will first look for templates in your personal
+`~/pgdev/templates/` directory before falling back to the default
 templates shipped with the tool in `~/pgdev/.core/templates/`.
-
-***
 
 ## Installation
 
@@ -122,15 +118,15 @@ source "$HOME/pgdev/.core/shell/pgdev.sh.env"
 
 After updating your shell file, open a new terminal to start using `pgdev`.
 
------
-
 ## Command Reference
 
 ### Instance Creation & Setup
 
-  * **`pgdev create <name> --template <tmpl> [--port <num>]`**: The main all-in-one command. Scaffolds, builds, initializes, configures, and starts a new instance.
-  * **`pgdev new <name> --template <tmpl>`**: Scaffolds a new instance directory and its blueprint scripts, but does *not* build it.
+  * **`pgdev create <name> <template_name>`**: All-in-one: scaffolds, builds, and starts an instance.
+  * **`pgdev new <name> <template_name>`**: Scaffolds a new instance directory from a template, but does *not* build it.
   * **`pgdev setup <name>`**: Runs the full `configure` and `build` chain for a scaffolded instance.
+  * **`pgdev init <name>`**: Initializes and configures the cluster for a new instance.
+  * **`pgdev delete <name>`**: Stops and completely removes an instance directory.
 
 ### Daily Management
 
@@ -138,29 +134,29 @@ After updating your shell file, open a new terminal to start using `pgdev`.
   * **`pgdev start [name]`**: Starts a stopped Postgres instance. Uses the active instance if `<name>` is omitted.
   * **`pgdev stop [name]`**: Stops a running Postgres instance.
   * **`pgdev restart [name]`**: Restarts an instance.
-  * **`pgdev delete <name>`**: Stops and completely removes an instance directory.
+  * **`pgdev status [name]`**: Checks the status of an instance.
 
 ### Shell Environment
 
-  * **`pgdev switch <name>`**: Activates an instance for the current shell session by setting `PATH`, `PGDATA`, etc.
+  * **`pgdev switch <name|default|off>`**: Activates an instance for the current shell session by setting `PATH`, `PGDATA`, etc.
   * **`pgdev default <name>`**: Sets an instance as the default for all new shell sessions.
 
 ### Development & Interaction
 
-  * **`pgdev build <name> <component>`**: Re-compiles a single component within an instance.
+  * **`pgdev configure <name> <component>`**: (Re-)configures a single component within an instance.
+  * **`pgdev build <name> <component>`**: (Re-)compiles a single component within an instance.
   * **`pgdev test <name> <component>`**: Runs the test suite for a single component.
   * **`pgdev psql [name]`**: Connects to the instance using `psql`.
   * **`pgdev logs [name]`**: Tails the main log file for the instance.
+  * **`pgdev conf [name]`**: Opens postgresql.conf for the instance using the user's default editor.
 
------
-
-## Example Workflow 🎬
+## Example Workflow
 
 1.  **Create your main work instance and set it as the default.**
 
     ```bash
-    pgdev create pg17-main --template postgres-only
-    pgdev default pg17-main
+    pgdev create pg18 base
+    pgdev default pg18
     ```
 
 2.  **Open a new terminal.** Your default instance is automatically active.
@@ -170,13 +166,13 @@ After updating your shell file, open a new terminal to start using `pgdev`.
     psql -c "SELECT version();"
     # version
     # ----------------------------------------------------
-    # PostgreSQL 17devel ...
+    # PostgreSQL 18.0 ...
     ```
 
 3.  **Create a separate instance to work on an extension.**
 
     ```bash
-    pgdev create mobility-dev --template postgres-postgis-mobilitydb
+    pgdev create mobility-dev mobilitydb
     ```
 
 4.  **Switch to the new instance for your current session.**
@@ -194,15 +190,11 @@ After updating your shell file, open a new terminal to start using `pgdev`.
     pgdev restart
     ```
 
------
-
 ## Advanced Concepts
 
-  * **`pgdev.conf`**: This file is auto-generated inside each instance after a successful build (e.g., `~/pgdev/instances/pg17-main/pgdev.conf`). It stores simple runtime metadata, primarily the **port** number and the PostgreSQL **version** string.
+  * **`pgdev.conf`**: This file is auto-generated inside each instance after a successful build (e.g., `~/pgdev/instances/pg18/pgdev.conf`). It stores simple runtime metadata, primarily the **port** number and the PostgreSQL **version** string.
 
   * **`pgdev.manifest`**: This file is used as a communication channel between blueprints during the build process. It allows blueprints to declare runtime requirements. For example, the MobilityDB blueprint can write `requires_preload=postgis-3` to the manifest. The `pgdev create` command will later read this file and automatically configure `shared_preload_libraries` in `postgresql.conf`, making the blueprints self-describing and modular.
-
------
 
 ## Uninstalling
 
@@ -215,9 +207,10 @@ To uninstall `pgdev`, you must remove the installed files and undo the shell int
 2.  **Remove the shell integration.**
       * For `fish` users: `fisher remove mschoema/pgdev-fish`.
       * For `bash`/`zsh` users: Remove the `source` line from your `.bashrc` or `.zshrc`.
-3.  **Remove your blueprints (optional).**
+3.  **Remove your blueprints and templates (optional).**
     ```bash
     rm -rf ~/pgdev/blueprints
+    rm -rf ~/pgdev/templates
     ```
 
 **Important**: This process does **not** touch your instance data located in `~/pgdev/instances/`. You must delete those directories manually if you no longer need them.

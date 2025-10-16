@@ -439,15 +439,16 @@ cmd_help() {
 	printf "  %-46s %s\n" "create <name> <template_name>" "All-in-one: scaffolds, builds, and starts an instance."
 	printf "  %-46s %s\n" "new <name> <template_name>" "Scaffolds a new instance directory from a template."
 	printf "  %-46s %s\n" "setup <name>" "Runs configure and build for a scaffolded instance."
+	printf "  %-46s %s\n" "init <name>" "Initializes and configures the cluster for a new instance."
 	printf "  %-46s %s\n" "delete <name>" "Stops and completely removes an instance."
 	echo ""
 
 	echo "Daily Management:"
-	printf "  %-46s %s\n" "list" "Lists all instances, their status, port, and version."
+	printf "  %-46s %s\n" "list" "Lists all instances, their status, port, and PostgreSQL version."
 	printf "  %-46s %s\n" "start [name]" "Starts an instance. Uses active one if name is omitted."
 	printf "  %-46s %s\n" "stop [name]" "Stops a running instance."
 	printf "  %-46s %s\n" "restart [name]" "Restarts an instance."
-	printf "  %-46s %s\n" "status [name]" "Check the status of an instance."
+	printf "  %-46s %s\n" "status [name]" "Checks the status of an instance."
 	echo ""
 
 	echo "Shell Environment:"
