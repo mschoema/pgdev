@@ -23,3 +23,8 @@ cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
   -DPG_CONFIG_PATH="$PGDEV_INSTALL_DIR/bin/pg_config" \
   -DCMAKE_INSTALL_PREFIX="$PGDEV_INSTALL_DIR"
+
+# Register the runtime requirement that postgis must be preloaded
+# for MobilityDB to work correctly.
+echo "[MobilityDB]" >> "$PGDEV_INSTANCE_DIR/pgdev.manifest"
+echo "requires_preload=postgis-3" >> "$PGDEV_INSTANCE_DIR/pgdev.manifest"

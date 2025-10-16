@@ -23,6 +23,4 @@ cd "postgis-$POSTGIS_VERSION"
 export CFLAGS="-O2 -g -pipe -march=native"
 
 # Point to the pg_config of our newly built PostgreSQL instance
-./configure --with-pgconfig="$PGDEV_INSTALL_DIR/bin/pg_config"
-
-unset CFLAGS
+./configure --prefix="$PGDEV_INSTALL_DIR" --with-pgconfig="$PGDEV_INSTALL_DIR/bin/pg_config"

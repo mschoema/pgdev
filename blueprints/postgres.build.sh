@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e
 
-echo "--- Building PostgreSQL 18.0 ---"
+pg_version="${PG_VERSION:-18.0}"
 
-cd "$PGDEV_SRC_DIR/postgresql-18.0"
+echo "--- Building PostgreSQL $pg_version ---"
+
+cd "$PGDEV_SRC_DIR/postgresql-$pg_version"
 
 # Build and install PostgreSQL and its bundled extensions
 make -j$(nproc) world-bin
