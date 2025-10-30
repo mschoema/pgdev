@@ -134,7 +134,7 @@ cmd_new() {
 	msg_info "Scaffolding new instance '$instance_name' from template '$template_name'..."
 	mkdir -p "$instance_dir"
 	# Copy the contents of the template directory into the new instance directory.
-	cp -r "$template_dir/." "$instance_dir/"
+	cp -Lr "$template_dir/." "$instance_dir/"
 	# Create the empty manifest file for the build process.
 	touch "$instance_dir/pgdev.manifest"
 	msg_info "Instance scaffolding complete at: $instance_dir"
