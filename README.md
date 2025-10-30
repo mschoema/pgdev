@@ -69,7 +69,7 @@ template for core development and a `postgres-postgis` template for
 extension work. The `pgdev new` command uses these templates to
 scaffold a new instance.
 
-The tool also supports a **blueprint override system**. When you use a
+(TODO) The tool also supports a **blueprint override system**. When you use a
 template, **`pgdev`** will first look for templates in your personal
 `~/pgdev/templates/` directory before falling back to the default
 templates shipped with the tool in `~/pgdev/.core/templates/`.
