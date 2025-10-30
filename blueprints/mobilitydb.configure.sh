@@ -21,7 +21,7 @@ mkdir -p build && cd build
 # Configure using CMake in Release mode
 cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
-  -DPG_CONFIG_PATH="$PGDEV_INSTALL_DIR/bin/pg_config" \
+  -DPOSTGRESQL_BIN="$PGDEV_INSTALL_DIR/bin" \
   -DCMAKE_INSTALL_PREFIX="$PGDEV_INSTALL_DIR"
 
 # Register the runtime requirement that postgis must be preloaded
