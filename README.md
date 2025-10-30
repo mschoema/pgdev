@@ -88,7 +88,14 @@ Clone the repository and run the installer script. This will create the
 gh repo clone mschoema/pgdev
 cd pgdev
 ./install.sh
-````
+```
+
+NOTE: The install script above has not been implemented yet. For now,
+manually symlink the cloned repo to `~/pgdev/.core`.
+
+```bash
+ln -s PATH_TO_PGDEV_GIT_REPO $HOME/pgdev/.core
+```
 
 ### Step 2: Configure Shell Integration
 
@@ -106,7 +113,7 @@ will automatically check that the core tool is installed.
 fisher install mschoema/pgdev-fish
 ```
 
-#### For `bash` & `zsh` Users
+#### For `bash` & `zsh` Users (TODO, this is not implemented yet)
 
 For `bash` and `zsh`, add the following line to your startup file
 (`.bashrc` for bash, `.zshrc` for zsh).
