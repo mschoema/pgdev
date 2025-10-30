@@ -396,6 +396,8 @@ cmd_default() {
 		return 1
 	fi
 	local instance_name=$1
+	msg_error "This command is not implemented yet"
+	msg_info "You can manually change the default by changing the destination of the ~/pgdev/pgsql symlink"
 }
 
 cmd_run_component_script() {
@@ -414,12 +416,12 @@ cmd_run_component_script() {
 	export PGDEV_SRC_DIR="$instance_dir/src"
 	mkdir -p "$PGDEV_SRC_DIR"
 
-	if [ ! -f "$component_script" ]; then
+	if [ ! -f "$instance_dir/$component_script" ]; then
 		msg_error "Script '$component_script' not found for instance '$instance_name'."
 		return 1
 	fi
 
-	bash "$component_script"
+	bash "$instance_dir/$component_script"
 }
 
 cmd_help() {
